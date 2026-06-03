@@ -69,7 +69,7 @@ def ver_saldo_ahorro():
 def depositar_dinero_ahorros(monto: float):
     """ruta para depositar a la cuenta de ahorros"""
     try:
-        resultado = mi_cuenta_ahorros.depositar_ahorros(monto)
+        resultado = mi_cuenta_ahorros.depositar(monto)
         return {"mensaje": resultado}
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
@@ -84,5 +84,14 @@ def retirar_dinero_ahorros(monto: float):
         return {"mensaje": resultado}
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/aplicar_interes")
+def aplicar_interes_ahorros():
+    """ruta para aplicar intereses a la cuenta de ahorros"""
+    try:
+        resultado = mi_cuenta_ahorros.aplicar_interes()
+        return {"mensaje": resultado}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

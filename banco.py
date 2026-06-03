@@ -26,5 +26,37 @@ class CuentaBancaria: ##Creo el objeto padre de las cuentas bancarias
         return f"Retiro exitoso. Nuevo saldo: {self.__saldo}" #aqui devolvemos un mensaje de que el retiro fue exitoso y el nuevo saldo
 
 
+class CuentaDeAhorros(CuentaBancaria): #Creao la clase hija de cuenta bancaria que seria cuenta corriente y depsues la vista de ahorros cuenta de ahorros hereda de cuenta bancaria
+    def __init__(self, titular:str, saldo_inicial: float =0.0, tasa_interes: float =0.01): #le decimos que el titular es un string el saldo inicial es un numero float equivalente a 0.0 y la tasa de interes es un numero float equivalente a 0.1 
+        super().__init__(titular, saldo_inicial) #aqui llamamos al constructor de la clase padre para inicializar el titular y el saldo
+        self.tasa_interes = tasa_interes # aqui inciamos la tasa de interes que es un atributo adicional de la clase hija
 
+
+    def calcular_interes(self) -> float: #le decimos que el resultado de esta funcion va a ser un numero float
+        """calcula el interes acumulado basado en el saldo actual y la tasa de interes""" #el docstring es para explicar que hace la funcion con fastapi
+        interes = self.obtener_saldo() * self.tasa_interes #aqui calculamos el interes multiplicando el saldo actual por la tasa de interes
+        return interes #aqui devolvemos el interes calculado"""
+        
+        
+    def aplica_interes(self) -> str:
+        """aplica el interes acumulado al saldo """
+        interes = self.calcular_interes()
+        self.depositar(interes) ##aplicamos el interes 
+        return f"interes apicado exitosamente. Nuevo saldo: {self.obtener_saldo()}"
+    
+
+    def retirar_ahorros(self, monto: float) -> None:
+        """retira dinero de la cuenta de ahorros pero nos quedamos con el interes """
+        if monto <= 0:
+            raise ValueError("El monto a retirar debe ser mayor a 0") #si el monto es menor o igual a 0 se lanza un error
+        if monto > self.obtener_saldo():
+            raise ValueError("Fondos insuficientes para retirar")
+        return super().retirar(monto) #aqui llamamos al metodo retirar de la clase padre para retirar el monto pero sin afectar el interes acumulado
+
+
+    def depositar_ahorros(self, monto: float) -> None:
+        """depositar dinero en la cuenta de ahorros pero sin afectar el interes acumulado"""
+        if monto <= 0:
+            raise ValueError("El monto a depositar debe ser mayor a 0") #si el monto es menor o igual a 0 se lanza un error
+        return super().depositar(monto) #aqui llamamos al metodo depositar de la clase padre para depositar el monto pero sin afectar el interes acumulado
 

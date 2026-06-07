@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException #Importamos FastAPI para crear la aplicación web y HTTPException para manejar errores de manera adecuada
 from banco import CuentaBancaria
 from banco import CuentaDeAhorros
+from banco import CuentaCorriente
 #Importamos la clase CuentaBancaria desde el archivo banco.py
 
 #1-Creamos al guardia (la aplicación FastAPI)
@@ -15,7 +16,7 @@ mi_cuenta = CuentaBancaria(titular="Juan Perez", saldo_inicial=1000.0)
 
 mi_cuenta_ahorros = CuentaDeAhorros(titular = "Juan Perez", saldo_inicial = 0.0, tasa_interes = 0.05)
 
-
+mi_cuenta_corriente = CuentaCorriente(titular = "Juan Perez", saldo_inicial = 0.0, sobre_giro = 500000.0)
 
 #3-Hacemos la primera ruta: ver ele saldo 
 @app.get("/saldo") #Definimos la ruta para obtener el saldo
@@ -95,3 +96,13 @@ def aplicar_interes_ahorros():
         return {"mensaje": resultado}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+@app.post("/retirar_sobregiro")
+def aplicar_retirar_sobre_giro():
+    """ruta para aplicar el sobregiro de manera segura"""
+    try:
+        resultado = mi_cuenta_corriente.retirar_sobregiro()
+        return {"Mensaje": resultado}
+    except Exception as e :
+        raise HTTPException (status_code=500, detail=str(e) )
